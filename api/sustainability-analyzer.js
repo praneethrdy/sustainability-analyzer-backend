@@ -34,11 +34,17 @@ if (process.env.TOGETHER_API_KEY) {
 }
 
 // Middleware
+const allowedOrigins = [
+  'https://sustainability-analyzer-frontend.vercel.app',
+  'https://sustainability-analyzer-frontend-8y097razk.vercel.app'
+];
+
 app.use(cors({
-  origin: [
-    'https://sustainability-analyzer-frontend.vercel.app',
-    'https://sustainability-analyzer-frontend-8y097razk.vercel.app'
-  ],
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
