@@ -43,8 +43,8 @@ if (process.env.TOGETHER_API_KEY) {
 
 // Middleware
 const allowedOrigins = [
-  'https://sustainability-analyzer-frontend.vercel.app',
-  'https://sustainability-analyzer-frontend-8y097razk.vercel.app'
+  'https://sustainabilit-git-949ba9-praneeth-reddy-devarannagaris-projects.vercel.app',
+  'https://sustainability-analyzer-frontend-f67opog70.vercel.app'
 ];
 
 app.use((req, res, next) => {
