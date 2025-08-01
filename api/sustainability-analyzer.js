@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const bodyParser = require('body-parser');
 const multer = require('multer');
 const cors = require('cors');
 const pdfParse = require('pdf-parse');
@@ -47,7 +48,9 @@ app.use(cors({
     // Otherwise, disallow
     return callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
 
