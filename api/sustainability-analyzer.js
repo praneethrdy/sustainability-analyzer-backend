@@ -5,9 +5,8 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
-const axios = require('axios');
 const multer = require('multer');
+const axios = require('axios');
 const cors = require('cors');
 const pdfParse = require('pdf-parse');
 const Tesseract = require('tesseract.js');
@@ -20,7 +19,6 @@ if (!process.env.TOGETHER_API_KEY) {
   throw new Error('TOGETHER_API_KEY is not set. Please check your .env file and restart the backend.');
 }
 
-dotenv.config();
 const app = express();
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -45,7 +43,28 @@ if (process.env.TOGETHER_API_KEY) {
 }
 
 // Middleware
-app.use(cors()); // Allow all origins for development/testing // Handle preflight requests
+const allowedOrigins = [
+  'https://sustainabilit-git-949ba9-praneeth-reddy-devarannagaris-projects.vercel.app',
+  'https://sustainability-analyzer-frontend-f67opog70.vercel.app'
+];
+
+app.use((req, res, next) => {
+  console.log('Incoming request:', req.method, req.originalUrl, 'Origin:', req.headers.origin);
+  next();
+});
+
+app.use(cors({
+  origin: function (origin, callback) {
+    console.log('CORS origin check:', origin);
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.options('*', cors()); // Handle preflight requests
 app.use(express.json());
 
 // Configure multer for file uploads
