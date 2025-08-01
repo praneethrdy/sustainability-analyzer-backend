@@ -19,6 +19,14 @@ if (!process.env.TOGETHER_API_KEY) {
 }
 
 const app = express();
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'Sustainability Analyzer API',
+    timestamp: new Date().toISOString()
+  });
+});
 const port = process.env.PORT || 3001;
 
 let openai;
@@ -45,7 +53,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     console.log('CORS origin check:', origin);
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
@@ -682,8 +690,8 @@ app.use((error, req, res, next) => {
 // Log all registered routes for debugging
 function logRoutes(app) {
   console.log('Registered routes:');
-  app._router.stack.forEach(function(r){
-    if (r.route && r.route.path){
+  app._router.stack.forEach(function (r) {
+    if (r.route && r.route.path) {
       console.log(r.route.stack[0].method.toUpperCase(), r.route.path);
     }
   });
