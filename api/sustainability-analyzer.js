@@ -52,6 +52,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+app.options('*', cors()); // Handle preflight requests
 app.use(express.json());
 
 // Configure multer for file uploads
