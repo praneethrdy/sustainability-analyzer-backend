@@ -34,10 +34,19 @@ if (process.env.TOGETHER_API_KEY) {
 
 // Middleware
 app.use(cors({
-  origin: [
-    'https://sustainability-analyzer-frontend.vercel.app',
-    /^https:\/\/sustainability-analyzer-frontend-[^.]+\.vercel\.app$/
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    // Allow production domain
+    if (origin === 'https://sustainability-analyzer-frontend.vercel.app') return callback(null, true);
+
+    // Allow all Vercel preview deployments
+    if (/^https:\/\/sustainability-analyzer-frontend-[^.]+\.vercel\.app$/.test(origin)) return callback(null, true);
+
+    // Otherwise, disallow
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());
