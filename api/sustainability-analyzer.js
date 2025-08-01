@@ -39,8 +39,14 @@ const allowedOrigins = [
   'https://sustainability-analyzer-frontend-8y097razk.vercel.app'
 ];
 
+app.use((req, res, next) => {
+  console.log('Incoming request:', req.method, req.originalUrl, 'Origin:', req.headers.origin);
+  next();
+});
+
 app.use(cors({
   origin: function(origin, callback) {
+    console.log('CORS origin check:', origin);
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
@@ -672,6 +678,17 @@ app.use((error, req, res, next) => {
   console.error('Unhandled error:', error);
   res.status(500).json({ error: 'Internal server error' });
 });
+
+// Log all registered routes for debugging
+function logRoutes(app) {
+  console.log('Registered routes:');
+  app._router.stack.forEach(function(r){
+    if (r.route && r.route.path){
+      console.log(r.route.stack[0].method.toUpperCase(), r.route.path);
+    }
+  });
+}
+logRoutes(app);
 
 // Do not start the server here; server.js will handle app.listen().
 
